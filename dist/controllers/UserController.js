@@ -90,7 +90,7 @@ const createUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
 exports.createUser = createUser;
 const updateInformation = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.user;
-    const { name, email, city, street } = req.body;
+    const { name, email } = req.body;
     if (!name || !email) {
         res.status(400).json({ message: "El nombre y el correo son obligatorios." });
         return;
@@ -98,11 +98,7 @@ const updateInformation = (req, res) => __awaiter(void 0, void 0, void 0, functi
     try {
         const updatedUser = yield User_1.User.findByIdAndUpdate(id, {
             name,
-            email,
-            address: {
-                street: street || "",
-                city: city || "",
-            },
+            email
         }, { new: true, runValidators: true });
         if (!updatedUser) {
             res.status(404).json({ message: "Usuario no encontrado." });
@@ -113,7 +109,6 @@ const updateInformation = (req, res) => __awaiter(void 0, void 0, void 0, functi
             user: {
                 name: updatedUser.name,
                 email: updatedUser.email,
-                address: updatedUser.address,
             },
         });
     }

@@ -3,8 +3,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.corsConfig = void 0;
 exports.corsConfig = {
     origin: function (origin, callback) {
-        const whitelist = [process.env.FRONTEND_URL];
-        if (whitelist.includes(origin)) {
+        const whitelist = [process.env.FRONTEND_URL, process.env.FRONTEND_URL2];
+        if (!origin || whitelist.includes(origin)) {
             callback(null, true);
         }
         else {
@@ -12,3 +12,4 @@ exports.corsConfig = {
         }
     }
 };
+//# sourceMappingURL=cors.js.map

@@ -21,8 +21,10 @@ const User_1 = require("../models/User");
 const Token_1 = __importDefault(require("../models/Token"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const handleGoogleAuthFailure = (req, res, next) => {
-    const state = req.query.state ? JSON.parse(req.query.state) : { redirectUrl: '/auth/sign-in' };
-    const redirectUrl = state.redirectUrl || '/auth/sign-in';
+    const state = req.query.state
+        ? JSON.parse(req.query.state)
+        : { redirectUrl: "/auth/sign-in" };
+    const redirectUrl = state.redirectUrl || "/auth/sign-in";
     return res.redirect(`${process.env.FRONTEND_URL}${redirectUrl}?error=true`);
 };
 exports.handleGoogleAuthFailure = handleGoogleAuthFailure;
@@ -173,12 +175,6 @@ const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             });
             return;
         }
-        if (user.isGoogleUser) {
-            res.status(400).json({
-                message: "Este usuario se registró con Google. Por favor, inicie sesión utilizando el botón de Google.",
-            });
-            return;
-        }
         const isPasswordValid = yield bcrypt_1.default.compare(password, user.password);
         if (!isPasswordValid) {
             res.status(400).json({
@@ -198,8 +194,7 @@ const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             _id: user._id,
             name: user.name,
             email: user.email,
-            address: user.address,
-            role: user.role
+            role: user.role,
         });
     }
     catch (error) {
@@ -262,12 +257,6 @@ const forgotPassword = (req, res) => __awaiter(void 0, void 0, void 0, function*
         if (!user) {
             const error = new Error("El Usuario no esta registrado");
             res.status(404).json({ message: error.message });
-            return;
-        }
-        if (user.isGoogleUser) {
-            res.status(400).json({
-                message: "Este usuario se registró con Google. Por favor, inicie sesión utilizando el botón de Google.",
-            });
             return;
         }
         const token = new Token_1.default();

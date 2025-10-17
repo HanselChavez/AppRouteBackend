@@ -1,10 +1,11 @@
-import { Request, Response, NextFunction } from 'express';
-import { IUser } from '../models/User';
-import 'multer';
+import { Request, Response, NextFunction } from "express";
+import { IUser } from "../models/User";
+import "multer";
 declare global {
     namespace Express {
+        interface User extends IUser {
+        }
         interface Request {
-            user?: IUser;
             files?: {
                 [fieldname: string]: Express.Multer.File[];
             } | Express.Multer.File[];
