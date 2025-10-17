@@ -75,18 +75,3 @@ const getShortestPath = (req, res) => __awaiter(void 0, void 0, void 0, function
     }
 });
 exports.getShortestPath = getShortestPath;
-const upload = (0, multer_1.default)({
-    storage: (0, multer_s3_1.default)({
-        s3: aws_1.s3,
-        bucket: process.env.AWS_S3_BUCKET_NAME,
-        acl: "public-read",
-        metadata: (req, file, cb) => {
-            cb(null, { fieldName: file.fieldname });
-        },
-        key: (req, file, cb) => {
-            const fileName = `${Date.now()}-${file.originalname}`;
-            cb(null, fileName);
-        },
-    }),
-}).array("images");
-//# sourceMappingURL=PathController.js.map
