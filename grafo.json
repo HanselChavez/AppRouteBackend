@@ -1,0 +1,516 @@
+{
+    "ENTRADA": {
+        "PATIO_1": 3
+    },
+    "PATIO_1": {
+        "ENTRADA": 3,
+        "CAFETERIA": 1,
+        "A_ESCALERA_PISO1": 3,
+        "PATIO_2": 14
+    },
+    "CAFETERIA": {
+        "PATIO_1": 1
+    },
+    "A_ESCALERA_PISO1": {
+        "PATIO_1": 3,
+        "A_ESCALERA_POSTERIOR_PISO1": 14,
+        "A_ESCALERA_PISO2": 3
+    },
+    "A_ESCALERA_PISO2": {
+        "A_ESCALERA_PISO1": 3,
+        "A_ESCALERA_POSTERIOR_PISO2": 14,
+        "A_ESCALERA_PISO3": 3
+    },
+    "A_ESCALERA_PISO3": {
+        "A_ESCALERA_PISO2": 3,
+        "A_ESCALERA_PISO4": 3,
+        "LACOM": 2
+    },
+    "A_ESCALERA_PISO4": {
+        "A_ESCALERA_PISO3": 3,
+        "A_ESCALERA_PISO5": 3,
+        "LESFU": 2
+    },
+    "LESFU": {
+        "A_ESCALERA_PISO4": 2,
+        "LFIS": 2
+    },
+    "LFIS": {
+        "LESFU": 2,
+        "LMUL1": 2
+    },
+    "LMUL1": {
+        "LFIS": 2,
+        "TEFI": 2
+    },
+    "TEFI": {
+        "A_ESCALERA_POSTERIOR_PISO4": 6,
+        "LMUL1": 2
+    },
+    "A_ESCALERA_PISO5": {
+        "A_ESCALERA_PISO4": 3,
+        "A_ESCALERA_PISO6": 3,
+        "A501": 2
+    },
+    "A_ESCALERA_PISO6": {
+        "A_ESCALERA_PISO5": 3,
+        "A_ESCALERA_PISO7": 3,
+        "A601": 2
+    },
+    "A_ESCALERA_PISO7": {
+        "A_ESCALERA_PISO6": 3,
+        "A_ESCALERA_PISO8": 3,
+        "A_ESCALERA_POSTERIOR_PISO7": 14
+    },
+    "A_ESCALERA_PISO8": {
+        "A_ESCALERA_PISO7": 3,
+        "A_ESCALERA_POSTERIOR_PISO8": 14
+    },
+    "LACOM": {
+        "A_ESCALERA_PISO3": 2,
+        "LCOS": 2
+    },
+    "LCOS": {
+        "LACOM": 2,
+        "LHOS": 2
+    },
+    "LHOS": {
+        "LCOS": 2,
+        "THAB": 2
+    },
+    "THAB": {
+        "LHOS": 2,
+        "A_ESCALERA_POSTERIOR_PISO3": 6
+    },
+    "A_ESCALERA_POSTERIOR_PISO1": {
+        "A_ESCALERA_PISO1": 14,
+        "A_ESCALERA_POSTERIOR_PISO2": 3,
+        "B_ESCALERA_POSTERIOR_PISO1": 14
+    },
+    "A_ESCALERA_POSTERIOR_PISO2": {
+        "A_ESCALERA_PISO2": 14,
+        "A_ESCALERA_POSTERIOR_PISO1": 3,
+        "A_ESCALERA_POSTERIOR_PISO3": 3,
+        "B_ESCALERA_POSTERIOR_PISO2": 14
+    },
+    "A_ESCALERA_POSTERIOR_PISO3": {
+        "A_ESCALERA_POSTERIOR_PISO2": 3,
+        "A_ESCALERA_POSTERIOR_PISO4": 3,
+        "THAB": 6,
+        "B_ESCALERA_POSTERIOR_PISO3": 14
+    },
+    "A_ESCALERA_POSTERIOR_PISO4": {
+        "TEFI": 6,
+        "A_ESCALERA_POSTERIOR_PISO3": 3,
+        "A_ESCALERA_POSTERIOR_PISO5": 3,
+        "B_ESCALERA_POSTERIOR_PISO4": 14
+    },
+    "A_ESCALERA_POSTERIOR_PISO5": {
+        "THAB2": 4,
+        "A_ESCALERA_POSTERIOR_PISO6": 3,
+        "A_ESCALERA_POSTERIOR_PISO4": 3,
+        "B_ESCALERA_POSTERIOR_PISO5": 14
+    },
+    "A_ESCALERA_POSTERIOR_PISO6": {
+        "TARQ1": 2,
+        "A_ESCALERA_POSTERIOR_PISO5": 3,
+        "A_ESCALERA_POSTERIOR_PISO7": 3,
+        "B_ESCALERA_POSTERIOR_PISO6": 1
+    },
+    "A_ESCALERA_POSTERIOR_PISO7": {
+        "A_ESCALERA_PISO7": 14,
+        "A_ESCALERA_POSTERIOR_PISO8": 3,
+        "A_ESCALERA_POSTERIOR_PISO6": 3,
+        "B_ESCALERA_POSTERIOR_PISO7": 14
+    },
+    "A_ESCALERA_POSTERIOR_PISO8": {
+        "A_ESCALERA_PISO8": 14,
+        "A_ESCALERA_POSTERIOR_PISO7": 3,
+        "B_ESCALERA_POSTERIOR_PISO8": 14
+    },
+    "A501": {
+        "A_ESCALERA_PISO5": 2,
+        "A502": 2
+    },
+    "A502": {
+        "A501": 2,
+        "A503": 2
+    },
+    "A503": {
+        "A502": 2,
+        "LHOS2": 2
+    },
+    "LHOS2": {
+        "A503": 2,
+        "THAB2": 2
+    },
+    "THAB2": {
+        "LHOS2": 2,
+        "A_ESCALERA_POSTERIOR_PISO5": 4
+    },
+    "A601": {
+        "A_ESCALERA_PISO6": 2,
+        "A602": 2
+    },
+    "A602": {
+        "A601": 2,
+        "LCOM1": 2
+    },
+    "LCOM1": {
+        "A602": 2,
+        "LCOM2": 2
+    },
+    "LCOM2": {
+        "LCOM1": 2,
+        "LELEC": 2
+    },
+    "LELEC": {
+        "LCOM2": 2,
+        "TARQ1": 2
+    },
+    "TARQ1": {
+        "LELEC": 2,
+        "A_ESCALERA_POSTERIOR_PISO6": 2
+    },
+    "PATIO_2": {
+        "PATIO_1": 14,
+        "PATIO_3": 4,
+        "B_ESCALERA_PISO1": 3
+    },
+    "PATIO_3": {
+        "PATIO_2": 4,
+        "PATIO_4": 3
+    },
+    "B_ESCALERA_PISO1": {
+        "B_ESCALERA_PISO2": 3,
+        "LAFOT": 2,
+        "PATIO_2": 3
+    },
+    "B_ESCALERA_PISO2": {
+        "B_ESCALERA_PISO1": 3,
+        "B_ESCALERA_PISO3": 3,
+        "B201": 2
+    },
+    "B_ESCALERA_PISO3": {
+        "B_ESCALERA_PISO2": 3,
+        "B_ESCALERA_PISO4": 3,
+        "B301": 2
+    },
+    "B_ESCALERA_PISO4": {
+        "B_ESCALERA_PISO3": 3,
+        "B_ESCALERA_PISO5": 3,
+        "B401": 2
+    },
+    "B_ESCALERA_PISO5": {
+        "B_ESCALERA_PISO4": 3,
+        "B_ESCALERA_PISO6": 3,
+        "B501": 2
+    },
+    "B_ESCALERA_PISO6": {
+        "B_ESCALERA_PISO5": 3,
+        "B_ESCALERA_PISO7": 3,
+        "B601": 2
+    },
+    "B_ESCALERA_PISO7": {
+        "B_ESCALERA_PISO6": 3,
+        "B_ESCALERA_PISO8": 3,
+        "B701": 2
+    },
+    "B_ESCALERA_PISO8": {
+        "B_ESCALERA_PISO7": 3,
+        "B_ESCALERA_POSTERIOR_PISO8": 14
+    },
+    "LAFOT": {
+        "B_ESCALERA_PISO1": 2,
+        "B101": 2
+    },
+    "B_ESCALERA_POSTERIOR_PISO8": {
+        "B_ESCALERA_PISO8": 14,
+        "B_ESCALERA_POSTERIOR_PISO7": 3,
+        "A_ESCALERA_POSTERIOR_PISO8": 14
+    },
+    "B_ESCALERA_POSTERIOR_PISO7": {
+        "B_ESCALERA_POSTERIOR_PISO6": 3,
+        "B_ESCALERA_POSTERIOR_PISO8": 3,
+        "THKEEPI": 2,
+        "A_ESCALERA_POSTERIOR_PISO7": 14
+    },
+    "B_ESCALERA_POSTERIOR_PISO6": {
+        "B_ESCALERA_POSTERIOR_PISO5": 3,
+        "B_ESCALERA_POSTERIOR_PISO7": 3,
+        "LRED1": 4,
+        "A_ESCALERA_POSTERIOR_PISO6": 14
+    },
+    "B_ESCALERA_POSTERIOR_PISO5": {
+        "B_ESCALERA_POSTERIOR_PISO6": 3,
+        "B_ESCALERA_POSTERIOR_PISO4": 3,
+        "ESGER": 4,
+        "A_ESCALERA_POSTERIOR_PISO5": 14
+    },
+    "B_ESCALERA_POSTERIOR_PISO4": {
+        "B_ESCALERA_POSTERIOR_PISO5": 3,
+        "B_ESCALERA_POSTERIOR_PISO3": 3,
+        "B407": 2,
+        "A_ESCALERA_POSTERIOR_PISO4": 14
+    },
+    "B_ESCALERA_POSTERIOR_PISO3": {
+        "B_ESCALERA_POSTERIOR_PISO4": 3,
+        "B_ESCALERA_POSTERIOR_PISO2": 3,
+        "LCOM5": 2,
+        "A_ESCALERA_POSTERIOR_PISO3": 14
+    },
+    "B_ESCALERA_POSTERIOR_PISO2": {
+        "B_ESCALERA_POSTERIOR_PISO1": 3,
+        "B_ESCALERA_POSTERIOR_PISO3": 3,
+        "TARQ5": 4,
+        "A_ESCALERA_POSTERIOR_PISO2": 14
+    },
+    "B_ESCALERA_POSTERIOR_PISO1": {
+        "B_ESCALERA_POSTERIOR_PISO2": 3,
+        "B102": 10,
+        "A_ESCALERA_POSTERIOR_PISO1": 14
+    },
+    "B701": {
+        "B702": 2,
+        "B_ESCALERA_PISO7": 2
+    },
+    "B702": {
+        "B701": 2,
+        "B703": 2
+    },
+    "B703": {
+        "B702": 2,
+        "B704": 2
+    },
+    "B704": {
+        "B703": 2,
+        "B705": 2
+    },
+    "B705": {
+        "B704": 2,
+        "B706": 2
+    },
+    "B706": {
+        "B705": 2,
+        "THKEEPI": 2
+    },
+    "THKEEPI": {
+        "B706": 2,
+        "B_ESCALERA_POSTERIOR_PISO7": 2
+    },
+    "LRED1": {
+        "B_ESCALERA_POSTERIOR_PISO6": 4,
+        "TARQ7": 2
+    },
+    "TARQ7": {
+        "LRED1": 2,
+        "TARQ6": 2
+    },
+    "TARQ6": {
+        "TARQ7": 2,
+        "LAB3D": 2
+    },
+    "LAB3D": {
+        "TARQ6": 2,
+        "B602": 2
+    },
+    "B602": {
+        "LAB3D": 2,
+        "B601": 2
+    },
+    "B601": {
+        "B602": 2,
+        "B_ESCALERA_PISO6": 2
+    },
+    "B501": {
+        "B_ESCALERA_PISO5": 2,
+        "B502": 2
+    },
+    "B502": {
+        "B501": 2,
+        "B503": 2
+    },
+    "B503": {
+        "B502": 2,
+        "B504": 2
+    },
+    "B504": {
+        "B503": 2,
+        "CONF1": 2
+    },
+    "CONF1": {
+        "B504": 2,
+        "ESGER": 2
+    },
+    "ESGER": {
+        "CONF1": 2,
+        "B_ESCALERA_POSTERIOR_PISO5": 4
+    },
+    "B401": {
+        "B_ESCALERA_PISO4": 2,
+        "B402": 2
+    },
+    "B402": {
+        "B401": 2,
+        "B403": 2
+    },
+    "B403": {
+        "B402": 2,
+        "B404": 2
+    },
+    "B404": {
+        "B403": 2,
+        "B405": 2
+    },
+    "B405": {
+        "B404": 2,
+        "B406": 2
+    },
+    "B406": {
+        "B405": 2,
+        "B407": 2
+    },
+    "B407": {
+        "B406": 2,
+        "B_ESCALERA_POSTERIOR_PISO4": 2
+    },
+    "LCOM5": {
+        "B_ESCALERA_POSTERIOR_PISO3": 2,
+        "LCOM4": 2
+    },
+    "LCOM4": {
+        "LCOM5": 2,
+        "LCOM3": 2
+    },
+    "LCOM3": {
+        "LCOM4": 2,
+        "B304": 2
+    },
+    "B304": {
+        "LCOM3": 2,
+        "B303": 2
+    },
+    "B303": {
+        "B304": 2,
+        "B302": 2
+    },
+    "B302": {
+        "B303": 2,
+        "B301": 2
+    },
+    "B301": {
+        "B302": 2,
+        "B_ESCALERA_PISO3": 2
+    },
+    "B201": {
+        "B_ESCALERA_PISO2": 2,
+        "TARQ2": 2
+    },
+    "TARQ2": {
+        "B201": 2,
+        "TARQ3": 2
+    },
+    "TARQ3": {
+        "TARQ2": 2,
+        "TARQ4": 2
+    },
+    "TARQ4": {
+        "TARQ3": 2,
+        "TARQ5": 2
+    },
+    "TARQ5": {
+        "TARQ4": 2,
+        "B_ESCALERA_POSTERIOR_PISO2": 4
+    },
+    "B101": {
+        "LAFOT": 2,
+        "B102": 2
+    },
+    "B102": {
+        "B101": 2,
+        "B_ESCALERA_POSTERIOR_PISO1": 10
+    },
+    "PATIO_4": {
+        "PATIO_3": 3,
+        "E_ESCALERA_PISO1": 2
+    },
+    "E_ESCALERA_PISO1": {
+        "PATIO_4": 2,
+        "E_ESCALERA_PISO2": 3,
+        "AULI": 2
+    },
+    "E_ESCALERA_PISO2": {
+        "E_ESCALERA_PISO1": 3,
+        "E_ESCALERA_PISO3": 3,
+        "CONF2": 2
+    },
+    "E_ESCALERA_PISO3": {
+        "E_ESCALERA_PISO2": 3,
+        "LCOM7": 2
+    },
+    "LCOM7": {
+        "E_ESCALERA_PISO3": 2,
+        "LCOM8": 2
+    },
+    "LCOM8": {
+        "LCOM7": 2,
+        "E_ESCALERA_POSTERIOR_PISO3": 10
+    },
+    "E_ESCALERA_POSTERIOR_PISO3": {
+        "LCOM8": 10,
+        "E_ESCALERA_POSTERIOR_PISO2": 3
+    },
+    "E_ESCALERA_POSTERIOR_PISO2": {
+        "E_ESCALERA_POSTERIOR_PISO3": 3,
+        "E_ESCALERA_POSTERIOR_PISO1": 3,
+        "E204": 2
+    },
+    "E_ESCALERA_POSTERIOR_PISO1": {
+        "E_ESCALERA_POSTERIOR_PISO2": 3,
+        "E101": 4
+    },
+    "E101": {
+        "E_ESCALERA_POSTERIOR_PISO1": 4,
+        "LMUL2": 2
+    },
+    "LMUL2": {
+        "E101": 2,
+        "LAUTO": 2
+    },
+    "LAUTO": {
+        "LMUL2": 2,
+        "AUFOG": 2
+    },
+    "AUFOG": {
+        "LAUTO": 2,
+        "AULI": 2
+    },
+    "AULI": {
+        "AUFOG": 2,
+        "E_ESCALERA_PISO1": 2
+    },
+    "CONF2": {
+        "E_ESCALERA_PISO2": 2,
+        "CONF3": 2
+    },
+    "CONF3": {
+        "CONF2": 2,
+        "E201": 2
+    },
+    "E201": {
+        "CONF3": 2,
+        "E202": 2
+    },
+    "E202": {
+        "E201": 2,
+        "E203": 2
+    },
+    "E203": {
+        "E202": 2,
+        "E204": 2
+    },
+    "E204": {
+        "E203": 2,
+        "E_ESCALERA_POSTERIOR_PISO2": 2
+    }
+}
