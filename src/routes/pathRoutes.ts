@@ -6,5 +6,5 @@ import { verifyUserToken } from "../middleware/auth";
 
 const router = Router();
 
-router.get("/shortest/:idOrigin/:idDestination", getShortestPath);
+router.get("/calcular_ruta", getShortestPath);
 export default router;

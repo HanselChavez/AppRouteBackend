@@ -11,13 +11,10 @@ export const getShortestPath = async (
     res: Response
 ): Promise<void> => {
     try {
-        const { idOrigin, idDestination } = req.params;
+        const { origen, destino } = req.body;
 
-        if (
-            !mongoose.Types.ObjectId.isValid(idOrigin) ||
-            !mongoose.Types.ObjectId.isValid(idDestination)
-        ) {
-            res.status(400).json({ message: "IDs inválidos" });
+        if (origen == "" || destino == "") {
+            res.status(400).json({ message: "Codigos inválidos" });
             return;
         }
 
@@ -46,7 +43,7 @@ export const getShortestPath = async (
         }
 
         // Aplicar Dijkstra
-        const result = dijkstra(graph, idOrigin, idDestination);
+        const result = dijkstra(graph, origen, destino);
 
         if (!result.path || result.path.length === 0) {
             res.status(404).json({
@@ -73,6 +70,3 @@ export const getShortestPath = async (
         });
     }
 };
-
-
-

@@ -5,43 +5,55 @@ export const dijkstra = (
 ): { distance: number; path: string[] } => {
     const distances: Record<string, number> = {};
     const previous: Record<string, string | null> = {};
-    const unvisited = new Set(Object.keys(graph));
+    const unvisited = new Set<string>(Object.keys(graph));
 
-    // Inicializar distancias
-    for (const node of Object.keys(graph)) {
+    // Inicializar todas las distancias con infinito excepto el nodo inicial
+    for (const node in graph) {
         distances[node] = node === start ? 0 : Infinity;
         previous[node] = null;
     }
 
     while (unvisited.size > 0) {
-        // Nodo con menor distancia
-        const current = Array.from(unvisited).reduce((min, node) =>
-            distances[node] < distances[min] ? node : min
-        );
+        // Buscar el nodo con menor distancia entre los no visitados
+        let currentNode: string | null = null;
+        let smallestDistance = Infinity;
 
-        unvisited.delete(current);
+        for (const node of unvisited) {
+            if (distances[node] < smallestDistance) {
+                smallestDistance = distances[node];
+                currentNode = node;
+            }
+        }
 
-        if (current === end) break;
+        // Si no hay nodo alcanzable o llegamos al destino, se detiene
+        if (!currentNode || currentNode === end) break;
 
-        for (const [neighbor, weight] of Object.entries(graph[current] || {})) {
-            const alt = distances[current] + weight;
+        unvisited.delete(currentNode);
+
+        // Revisar los nodos adyacentes
+        for (const [neighbor, weight] of Object.entries(graph[currentNode])) {
+            const alt = distances[currentNode] + weight;
             if (alt < distances[neighbor]) {
                 distances[neighbor] = alt;
-                previous[neighbor] = current;
+                previous[neighbor] = currentNode;
             }
         }
     }
 
-    // Reconstruir camino
+    // Reconstruir el camino
     const path: string[] = [];
-    let current: string | null = end;
+    let current = end;
+
     while (current) {
         path.unshift(current);
-        current = previous[current];
+        current = previous[current]!;
+        if (current === null) break;
     }
 
-    return {
-        distance: distances[end],
-        path: distances[end] === Infinity ? [] : path,
-    };
+    // Si el nodo inicial no está en el camino, no hay ruta válida
+    if (!path.includes(start)) {
+        return { distance: Infinity, path: [] };
+    }
+
+    return { distance: distances[end], path };
 };
