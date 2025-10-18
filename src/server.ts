@@ -28,7 +28,7 @@ app.use(
 app.use(morgan("dev"));
 //seedNodes() // Seed initial nodes data
 app.use("/api/auth", authRoutes);
-app.use("/api/path", pathRoutes);
+app.use("/rutas", pathRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/nodes", nodeRoutes);
 app.get("/error", (req, res, next) => {
