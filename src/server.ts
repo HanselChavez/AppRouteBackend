@@ -27,10 +27,10 @@ app.use(
 );
 app.use(morgan("dev"));
 //seedNodes() // Seed initial nodes data
-app.use("/api/auth", authRoutes);
+app.use("/auth", authRoutes);
 app.use("/rutas", pathRoutes);
-app.use("/api/users", userRoutes);
-app.use("/api/nodes", nodeRoutes);
+app.use("/users", userRoutes);
+app.use("/nodes", nodeRoutes);
 app.get("/error", (req, res, next) => {
     const error = new AuthenticationError(
         "You are not authorized to access this resource"

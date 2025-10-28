@@ -9,7 +9,8 @@ import {
     updatePasswordWithToken,
     updateCurrentUserPassword,
     user,
-    googleAuth,
+    getPerfil,
+    updatePerfil,
     handleGoogleAuthFailure,
     validateToken,
 } from "../controllers/AuthController";
@@ -18,10 +19,12 @@ import {
 const router = Router();
 router.get("/user", verifyUserToken, user);
 router.post("/register", registerUser);
+router.post("/login", loginUser);
+router.get("/perfil",verifyUserToken, getPerfil);
+router.put("/perfil",verifyUserToken, updatePerfil);
 router.post("/verify-token", validateToken);
 router.post("/verify-email", verifyUser);
 router.post("/resend-verification", resendVerificationToken);
-router.post("/login", loginUser);
 router.post("/forgot-password", forgotPassword);
 router.patch("/reset-password/:token", updatePasswordWithToken);
 router.patch("/update-password", verifyUserToken, updateCurrentUserPassword);

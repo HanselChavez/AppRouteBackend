@@ -52,51 +52,44 @@ export const registerUser = async (
     req: Request,
     res: Response
 ): Promise<void> => {
-    const { name, email, password } = req.body;
+    const { nombre, email, password } = req.body;
 
     try {
+        if (!nombre || !email || !password) {
+            res.status(400).json({ message: "Datos incompletos o inválidos" });
+            return;
+        }
+
         const existingUser = await User.findOne({ email });
         if (existingUser) {
-            res.status(400).json({
-                message: "El correo ya está registrado.",
-            });
+            res.status(409).json({ message: "El correo ya está registrado" });
             return;
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
 
         const newUser = new User({
-            name,
+            nombre,
             email,
             password: hashedPassword,
-            role: "customer",
-            confirmed: false,
+            confirmed: true,
         });
 
         const savedUser = await newUser.save();
+        const token = generateJWT({ id: savedUser._id.toString() });
 
-        const verificationToken = generateToken();
-
-        const token = new Token({
-            token: verificationToken,
-            user: savedUser._id,
-        });
-        await token.save();
-        sendConfirmationEmail({
-            email: savedUser.email,
-            name: savedUser.name,
-            token: token.token,
-        });
         res.status(201).json({
-            message: "Usuario registrado exitosamente. Verifique su correo.",
-            userId: savedUser._id,
-            verificationToken,
+            token,
+            user: {
+                id: savedUser._id,
+                nombre: savedUser.name,
+                email: savedUser.email,
+                telefono: "",
+                foto: "",
+            },
         });
     } catch (error) {
-        res.status(500).json({
-            message: "Error al registrar el usuario.",
-            error: error.message,
-        });
+        res.status(500).json({ message: "Error interno del servidor" });
     }
 };
 export const verifyUser = async (
@@ -183,42 +176,36 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
     const { email, password } = req.body;
 
     try {
-        const user = await User.findOne({ email }).lean();
-        if (!user) {
-            res.status(404).json({
-                message: "El usuario no está registrado.",
-            });
-            return;
-        }
-        const isPasswordValid = await bcrypt.compare(password, user.password);
-        if (!isPasswordValid) {
-            res.status(400).json({
-                message: "Correo electrónico o contraseña incorrectos.",
-            });
+        if (!email || !password) {
+            res.status(400).json({ message: "Datos incompletos o inválidos" });
             return;
         }
 
-        if (!user.confirmed) {
-            res.status(400).json({
-                message:
-                    "La cuenta no ha sido verificada. Por favor, revise su correo electrónico para completar la verificación.",
-            });
+        const user = await User.findOne({ email }).lean();
+        if (!user) {
+            res.status(404).json({ message: "Usuario no encontrado" });
+            return;
+        }
+
+        const isPasswordValid = await bcrypt.compare(password, user.password);
+        if (!isPasswordValid) {
+            res.status(401).json({ message: "Credenciales inválidas" });
             return;
         }
 
         const token = generateJWT({ id: user._id.toString() });
         res.status(200).json({
             token,
-            _id: user._id,
-            name: user.name,
-            email: user.email,
-            role: user.role,
+            user: {
+                id: user._id,
+                nombre: user.name,
+                email: user.email,
+                telefono: user.telefono ?? "",
+                foto: user.foto ?? "",
+            },
         });
     } catch (error) {
-        res.status(500).json({
-            message: "Hubo un error al intentar iniciar sesión.",
-            error: error.message,
-        });
+        res.status(500).json({ message: "Error interno del servidor" });
     }
 };
 export const updateCurrentUserPassword = async (
@@ -275,6 +262,78 @@ export const updatePasswordWithToken = async (
         return;
     } catch (error) {
         res.status(500).json({ message: "Hubo un error" });
+    }
+};
+export const updatePerfil = async (
+    req: Request,
+    res: Response
+): Promise<void> => {
+    try {
+        // Validación de token
+        if (!req.user) {
+            res.status(401).json({ message: "Token inválido" });
+            return;
+        }
+
+        const { nombre, telefono, foto } = req.body;
+
+        // Validar que al menos un campo venga a actualizar
+        if (!nombre && !telefono && !foto) {
+            res.status(400).json({ message: "Datos inválidos" });
+            return;
+        }
+
+        const userId = req.user.id;
+
+        const updatedUser = await User.findByIdAndUpdate(
+            userId,
+            { nombre, telefono, foto },
+            { new: true } // devuelve el usuario actualizado
+        ).lean();
+
+        if (!updatedUser) {
+            res.status(500).json({ message: "Error actualizando perfil" });
+            return;
+        }
+
+        res.status(200).json({
+            message: "Perfil actualizado correctamente",
+            user: {
+                id: updatedUser._id,
+                nombre: updatedUser.name,
+                email: updatedUser.email,
+                telefono: updatedUser.telefono ?? "",
+                foto: updatedUser.foto ?? "",
+            },
+        });
+    } catch (error) {
+        res.status(500).json({ message: "Error actualizando perfil" });
+    }
+};
+export const getPerfil = async (req: Request, res: Response): Promise<void> => {
+    try {
+        if (!req.user) {
+            res.status(401).json({ message: "Token inválido o expirado" });
+            return;
+        }
+
+        const userId = req.user.id;
+        const user = await User.findById(userId).lean();
+
+        if (!user) {
+            res.status(404).json({ message: "Usuario no encontrado" });
+            return;
+        }
+
+        res.status(200).json({
+            id: user._id,
+            nombre: user.name,
+            email: user.email,
+            telefono: user.telefono ?? "",
+            foto: user.foto ?? "",
+        });
+    } catch (error) {
+        res.status(500).json({ message: "Error obteniendo perfil" });
     }
 };
 export const forgotPassword = async (req: Request, res: Response) => {
