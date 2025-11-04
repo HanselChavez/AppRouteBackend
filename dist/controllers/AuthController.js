@@ -191,6 +191,7 @@ const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         });
     }
     catch (error) {
+        console.log(error);
         res.status(500).json({ message: "Error interno del servidor" });
     }
 });
