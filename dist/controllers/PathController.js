@@ -58,9 +58,11 @@ const getShortestPath = (req, res) => __awaiter(void 0, void 0, void 0, function
             return;
         }
         // Obtener nodos de la ruta (por code)
-        const pathNodes = yield Node_1.Node.find({ code: { $in: result.path } })
+        let pathNodes = yield Node_1.Node.find({ code: { $in: result.path } })
             .select("name code image description")
             .lean();
+        // Ordenar según el orden real del path
+        pathNodes = pathNodes.sort((a, b) => result.path.indexOf(a.code) - result.path.indexOf(b.code));
         const fecha = new Date();
         const metadata = {
             fecha: fecha.toISOString().split("T")[0], // YYYY-MM-DD
