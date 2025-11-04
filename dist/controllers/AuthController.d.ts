@@ -12,5 +12,7 @@ export declare const resendVerificationToken: (req: Request, res: Response) => P
 export declare const loginUser: (req: Request, res: Response) => Promise<void>;
 export declare const updateCurrentUserPassword: (req: Request, res: Response) => Promise<void>;
 export declare const updatePasswordWithToken: (req: Request, res: Response) => Promise<void>;
+export declare const updatePerfil: (req: Request, res: Response) => Promise<void>;
+export declare const getPerfil: (req: Request, res: Response) => Promise<void>;
 export declare const forgotPassword: (req: Request, res: Response) => Promise<void>;
 export declare const validateToken: (req: Request, res: Response) => Promise<void>;

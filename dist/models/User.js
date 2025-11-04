@@ -39,6 +39,8 @@ const UserSchema = new mongoose_1.Schema({
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: false },
+    telefono: { type: String },
+    foto: { type: String },
     role: {
         type: String,
         enum: ["admin", "student"],
@@ -46,11 +48,11 @@ const UserSchema = new mongoose_1.Schema({
     },
     confirmed: {
         type: Boolean,
-        default: false
+        default: false,
     },
     active: {
         type: Boolean,
-        default: true
+        default: true,
     },
 }, { timestamps: true });
 exports.User = mongoose_1.default.model("User", UserSchema);

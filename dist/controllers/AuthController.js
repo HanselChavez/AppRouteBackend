@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.validateToken = exports.forgotPassword = exports.updatePasswordWithToken = exports.updateCurrentUserPassword = exports.loginUser = exports.resendVerificationToken = exports.verifyUser = exports.registerUser = exports.googleAuth = exports.user = exports.handleGoogleAuthFailure = void 0;
+exports.validateToken = exports.forgotPassword = exports.getPerfil = exports.updatePerfil = exports.updatePasswordWithToken = exports.updateCurrentUserPassword = exports.loginUser = exports.resendVerificationToken = exports.verifyUser = exports.registerUser = exports.googleAuth = exports.user = exports.handleGoogleAuthFailure = void 0;
 const auth_1 = require("../utils/auth");
 const token_1 = require("../utils/token");
 const jwt_1 = require("../utils/jwt");
@@ -55,46 +55,39 @@ const googleAuth = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
 });
 exports.googleAuth = googleAuth;
 const registerUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { name, email, password } = req.body;
+    const { nombre, email, password } = req.body;
     try {
+        if (!nombre || !email || !password) {
+            res.status(400).json({ message: "Datos incompletos o inválidos" });
+            return;
+        }
         const existingUser = yield User_1.User.findOne({ email });
         if (existingUser) {
-            res.status(400).json({
-                message: "El correo ya está registrado.",
-            });
+            res.status(409).json({ message: "El correo ya está registrado" });
             return;
         }
         const hashedPassword = yield bcrypt_1.default.hash(password, 10);
         const newUser = new User_1.User({
-            name,
+            nombre,
             email,
             password: hashedPassword,
-            role: "customer",
-            confirmed: false,
+            confirmed: true,
         });
         const savedUser = yield newUser.save();
-        const verificationToken = (0, token_1.generateToken)();
-        const token = new Token_1.default({
-            token: verificationToken,
-            user: savedUser._id,
-        });
-        yield token.save();
-        (0, AuthEmail_1.sendConfirmationEmail)({
-            email: savedUser.email,
-            name: savedUser.name,
-            token: token.token,
-        });
+        const token = (0, jwt_1.generateJWT)({ id: savedUser._id.toString() });
         res.status(201).json({
-            message: "Usuario registrado exitosamente. Verifique su correo.",
-            userId: savedUser._id,
-            verificationToken,
+            token,
+            user: {
+                id: savedUser._id,
+                nombre: savedUser.name,
+                email: savedUser.email,
+                telefono: "",
+                foto: "",
+            },
         });
     }
     catch (error) {
-        res.status(500).json({
-            message: "Error al registrar el usuario.",
-            error: error.message,
-        });
+        res.status(500).json({ message: "Error interno del servidor" });
     }
 });
 exports.registerUser = registerUser;
@@ -166,42 +159,37 @@ const resendVerificationToken = (req, res) => __awaiter(void 0, void 0, void 0, 
 });
 exports.resendVerificationToken = resendVerificationToken;
 const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a, _b;
     const { email, password } = req.body;
     try {
+        if (!email || !password) {
+            res.status(400).json({ message: "Datos incompletos o inválidos" });
+            return;
+        }
         const user = yield User_1.User.findOne({ email }).lean();
         if (!user) {
-            res.status(404).json({
-                message: "El usuario no está registrado.",
-            });
+            res.status(404).json({ message: "Usuario no encontrado" });
             return;
         }
         const isPasswordValid = yield bcrypt_1.default.compare(password, user.password);
         if (!isPasswordValid) {
-            res.status(400).json({
-                message: "Correo electrónico o contraseña incorrectos.",
-            });
-            return;
-        }
-        if (!user.confirmed) {
-            res.status(400).json({
-                message: "La cuenta no ha sido verificada. Por favor, revise su correo electrónico para completar la verificación.",
-            });
+            res.status(401).json({ message: "Credenciales inválidas" });
             return;
         }
         const token = (0, jwt_1.generateJWT)({ id: user._id.toString() });
         res.status(200).json({
             token,
-            _id: user._id,
-            name: user.name,
-            email: user.email,
-            role: user.role,
+            user: {
+                id: user._id,
+                nombre: user.name,
+                email: user.email,
+                telefono: (_a = user.telefono) !== null && _a !== void 0 ? _a : "",
+                foto: (_b = user.foto) !== null && _b !== void 0 ? _b : "",
+            },
         });
     }
     catch (error) {
-        res.status(500).json({
-            message: "Hubo un error al intentar iniciar sesión.",
-            error: error.message,
-        });
+        res.status(500).json({ message: "Error interno del servidor" });
     }
 });
 exports.loginUser = loginUser;
@@ -250,6 +238,69 @@ const updatePasswordWithToken = (req, res) => __awaiter(void 0, void 0, void 0, 
     }
 });
 exports.updatePasswordWithToken = updatePasswordWithToken;
+const updatePerfil = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a, _b;
+    try {
+        // Validación de token
+        if (!req.user) {
+            res.status(401).json({ message: "Token inválido" });
+            return;
+        }
+        const { nombre, telefono, foto } = req.body;
+        // Validar que al menos un campo venga a actualizar
+        if (!nombre && !telefono && !foto) {
+            res.status(400).json({ message: "Datos inválidos" });
+            return;
+        }
+        const userId = req.user.id;
+        const updatedUser = yield User_1.User.findByIdAndUpdate(userId, { nombre, telefono, foto }, { new: true } // devuelve el usuario actualizado
+        ).lean();
+        if (!updatedUser) {
+            res.status(500).json({ message: "Error actualizando perfil" });
+            return;
+        }
+        res.status(200).json({
+            message: "Perfil actualizado correctamente",
+            user: {
+                id: updatedUser._id,
+                nombre: updatedUser.name,
+                email: updatedUser.email,
+                telefono: (_a = updatedUser.telefono) !== null && _a !== void 0 ? _a : "",
+                foto: (_b = updatedUser.foto) !== null && _b !== void 0 ? _b : "",
+            },
+        });
+    }
+    catch (error) {
+        res.status(500).json({ message: "Error actualizando perfil" });
+    }
+});
+exports.updatePerfil = updatePerfil;
+const getPerfil = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a, _b;
+    try {
+        if (!req.user) {
+            res.status(401).json({ message: "Token inválido o expirado" });
+            return;
+        }
+        const userId = req.user.id;
+        const user = yield User_1.User.findById(userId).lean();
+        if (!user) {
+            res.status(404).json({ message: "Usuario no encontrado" });
+            return;
+        }
+        res.status(200).json({
+            id: user._id,
+            nombre: user.name,
+            email: user.email,
+            telefono: (_a = user.telefono) !== null && _a !== void 0 ? _a : "",
+            foto: (_b = user.foto) !== null && _b !== void 0 ? _b : "",
+        });
+    }
+    catch (error) {
+        res.status(500).json({ message: "Error obteniendo perfil" });
+    }
+});
+exports.getPerfil = getPerfil;
 const forgotPassword = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { email } = req.body;

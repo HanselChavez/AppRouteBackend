@@ -8,26 +8,28 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getShortestPath = void 0;
 const Node_1 = require("../models/Node");
-const multer_1 = __importDefault(require("multer"));
-const multer_s3_1 = __importDefault(require("multer-s3"));
-const aws_1 = require("../config/aws");
 const dijkstra_1 = require("../utils/dijkstra");
-const mongoose_1 = __importDefault(require("mongoose"));
 const getShortestPath = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { idOrigin, idDestination } = req.params;
-        if (!mongoose_1.default.Types.ObjectId.isValid(idOrigin) ||
-            !mongoose_1.default.Types.ObjectId.isValid(idDestination)) {
-            res.status(400).json({ message: "IDs inválidos" });
+        const { origen, destino } = req.body;
+        if (!origen || !destino) {
+            res.status(400).json({ message: "Códigos inválidos" });
             return;
         }
-        // Obtener todos los nodos y sus conexiones
+        console.log("🔍 Calculando ruta más corta de", origen, "a", destino);
+        // Buscar los nodos por código
+        const origenNode = yield Node_1.Node.findOne({ code: origen });
+        const destinoNode = yield Node_1.Node.findOne({ code: destino });
+        if (!origenNode || !destinoNode) {
+            res.status(404).json({
+                message: "Alguno de los códigos no existe",
+            });
+            return;
+        }
+        // Obtener todos los nodos con sus conexiones
         const nodes = yield Node_1.Node.find()
             .populate("connections.destination", "_id name code")
             .lean();
@@ -37,33 +39,50 @@ const getShortestPath = (req, res) => __awaiter(void 0, void 0, void 0, function
             });
             return;
         }
-        // Construimos el grafo como un objeto: { nodoId: { destinoId: peso } }
         const graph = {};
         for (const node of nodes) {
             const adjacents = {};
             for (const conn of node.connections) {
-                if (conn.destination) {
-                    adjacents[String(conn.destination._id)] = conn.weight;
+                const destino = conn.destination;
+                if (destino && destino.code) {
+                    adjacents[destino.code] = conn.weight;
                 }
             }
-            graph[String(node._id)] = adjacents;
+            graph[node.code] = adjacents;
         }
-        // Aplicar Dijkstra
-        const result = (0, dijkstra_1.dijkstra)(graph, idOrigin, idDestination);
+        const result = (0, dijkstra_1.dijkstra)(graph, origen, destino);
         if (!result.path || result.path.length === 0) {
             res.status(404).json({
                 message: "No hay ruta entre los nodos seleccionados",
             });
             return;
         }
-        // Obtener los nodos de la ruta
-        const pathNodes = yield Node_1.Node.find({ _id: { $in: result.path } })
-            .select("name code image")
+        // Obtener nodos de la ruta (por code)
+        const pathNodes = yield Node_1.Node.find({ code: { $in: result.path } })
+            .select("name code image description")
             .lean();
+        const fecha = new Date();
+        const metadata = {
+            fecha: fecha.toISOString().split("T")[0], // YYYY-MM-DD
+            hora: fecha.toTimeString().slice(0, 5), // HH:mm
+        };
+        // Adaptar los datos al formato del frontend
+        const formattedNodes = pathNodes.map((node, index) => ({
+            id: node._id,
+            nombre: node.code || "Sin nombre",
+            descripcion: node.name || `Descripción del nodo ${node.code}`,
+            imagen: node.image || "https://picsum.photos/200/200",
+            mensaje: index === 0
+                ? "Aquí comienza tu ruta"
+                : index === pathNodes.length - 1
+                    ? "Has llegado a tu destino"
+                    : "Dirígete al siguiente punto",
+        }));
         res.status(200).json({
+            metadata,
             totalWeight: result.distance,
             path: result.path,
-            nodes: pathNodes,
+            nodos: formattedNodes, // 👈 coincide con lo que espera el frontend
         });
     }
     catch (error) {
@@ -75,3 +94,4 @@ const getShortestPath = (req, res) => __awaiter(void 0, void 0, void 0, function
     }
 });
 exports.getShortestPath = getShortestPath;
+//# sourceMappingURL=PathController.js.map

@@ -29,10 +29,10 @@ app.use((0, express_session_1.default)({
 }));
 app.use((0, morgan_1.default)("dev"));
 //seedNodes() // Seed initial nodes data
-app.use("/api/auth", authRoutes_1.default);
-app.use("/api/path", pathRoutes_1.default);
-app.use("/api/users", userRoutes_1.default);
-app.use("/api/nodes", nodeRoutes_1.default);
+app.use("/auth", authRoutes_1.default);
+app.use("/rutas", pathRoutes_1.default);
+app.use("/users", userRoutes_1.default);
+app.use("/nodes", nodeRoutes_1.default);
 app.get("/error", (req, res, next) => {
     const error = new AuthenticationError_1.AuthenticationError("You are not authorized to access this resource");
     next(error);
