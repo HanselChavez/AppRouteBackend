@@ -76,7 +76,7 @@ export const createUser = async (
             message: "Usuario creado exitosamente.",
             data: {
                 id: savedUser._id,
-                name: savedUser.name,
+                name: savedUser.nombre,
                 email: savedUser.email,
                 role: savedUser.role,
             },
@@ -113,7 +113,7 @@ export const updateInformation =  async (req: Request, res: Response):Promise<vo
         res.status(200).json({
             message: "Usuario actualizado exitosamente.",
             user: {
-                name: updatedUser.name,
+                name: updatedUser.nombre,
                 email: updatedUser.email,
             },
         });
@@ -174,7 +174,7 @@ export const deleteUser = async (
             message: "Usuario eliminado exitosamente.",
             data: {
                 id: deletedUser._id,
-                name: deletedUser.name,
+                nombre: deletedUser.nombre,
                 email: deletedUser.email,
             },
         });

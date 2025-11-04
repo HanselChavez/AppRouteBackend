@@ -74,7 +74,7 @@ const createUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             message: "Usuario creado exitosamente.",
             data: {
                 id: savedUser._id,
-                name: savedUser.name,
+                name: savedUser.nombre,
                 email: savedUser.email,
                 role: savedUser.role,
             },
@@ -107,7 +107,7 @@ const updateInformation = (req, res) => __awaiter(void 0, void 0, void 0, functi
         res.status(200).json({
             message: "Usuario actualizado exitosamente.",
             user: {
-                name: updatedUser.name,
+                name: updatedUser.nombre,
                 email: updatedUser.email,
             },
         });
@@ -159,7 +159,7 @@ const deleteUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             message: "Usuario eliminado exitosamente.",
             data: {
                 id: deletedUser._id,
-                name: deletedUser.name,
+                nombre: deletedUser.nombre,
                 email: deletedUser.email,
             },
         });

@@ -70,6 +70,7 @@ const registerUser = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         const newUser = new User_1.User({
             nombre,
             email,
+            role: "student",
             password: hashedPassword,
             confirmed: true,
         });
@@ -79,7 +80,7 @@ const registerUser = (req, res) => __awaiter(void 0, void 0, void 0, function* (
             token,
             user: {
                 id: savedUser._id,
-                nombre: savedUser.name,
+                nombre: savedUser.nombre,
                 email: savedUser.email,
                 telefono: "",
                 foto: "",
@@ -87,6 +88,7 @@ const registerUser = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         });
     }
     catch (error) {
+        console.log(error);
         res.status(500).json({ message: "Error interno del servidor" });
     }
 });
@@ -181,7 +183,7 @@ const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             token,
             user: {
                 id: user._id,
-                nombre: user.name,
+                nombre: user.nombre,
                 email: user.email,
                 telefono: (_a = user.telefono) !== null && _a !== void 0 ? _a : "",
                 foto: (_b = user.foto) !== null && _b !== void 0 ? _b : "",
@@ -263,7 +265,7 @@ const updatePerfil = (req, res) => __awaiter(void 0, void 0, void 0, function* (
             message: "Perfil actualizado correctamente",
             user: {
                 id: updatedUser._id,
-                nombre: updatedUser.name,
+                nombre: updatedUser.nombre,
                 email: updatedUser.email,
                 telefono: (_a = updatedUser.telefono) !== null && _a !== void 0 ? _a : "",
                 foto: (_b = updatedUser.foto) !== null && _b !== void 0 ? _b : "",
@@ -290,7 +292,7 @@ const getPerfil = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         }
         res.status(200).json({
             id: user._id,
-            nombre: user.name,
+            nombre: user.nombre,
             email: user.email,
             telefono: (_a = user.telefono) !== null && _a !== void 0 ? _a : "",
             foto: (_b = user.foto) !== null && _b !== void 0 ? _b : "",
@@ -316,7 +318,7 @@ const forgotPassword = (req, res) => __awaiter(void 0, void 0, void 0, function*
         yield token.save();
         (0, AuthEmail_1.sendPasswordResetToken)({
             email: user.email,
-            name: user.name,
+            name: user.nombre,
             token: token.token,
         });
         res.status(200).json({
