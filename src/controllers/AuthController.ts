@@ -61,6 +61,7 @@ export const registerUser = async (
         }
 
         const existingUser = await User.findOne({ email });
+
         if (existingUser) {
             res.status(409).json({ message: "El correo ya está registrado" });
             return;
@@ -71,24 +72,25 @@ export const registerUser = async (
         const newUser = new User({
             nombre,
             email,
+            role: "student",
             password: hashedPassword,
             confirmed: true,
         });
-
         const savedUser = await newUser.save();
         const token = generateJWT({ id: savedUser._id.toString() });
-
+        
         res.status(201).json({
             token,
             user: {
                 id: savedUser._id,
-                nombre: savedUser.name,
+                nombre: savedUser.nombre,
                 email: savedUser.email,
                 telefono: "",
                 foto: "",
             },
         });
     } catch (error) {
+        console.log(error);
         res.status(500).json({ message: "Error interno del servidor" });
     }
 };
@@ -198,7 +200,7 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
             token,
             user: {
                 id: user._id,
-                nombre: user.name,
+                nombre: user.nombre,
                 email: user.email,
                 telefono: user.telefono ?? "",
                 foto: user.foto ?? "",
@@ -300,7 +302,7 @@ export const updatePerfil = async (
             message: "Perfil actualizado correctamente",
             user: {
                 id: updatedUser._id,
-                nombre: updatedUser.name,
+                nombre: updatedUser.nombre,
                 email: updatedUser.email,
                 telefono: updatedUser.telefono ?? "",
                 foto: updatedUser.foto ?? "",
@@ -327,7 +329,7 @@ export const getPerfil = async (req: Request, res: Response): Promise<void> => {
 
         res.status(200).json({
             id: user._id,
-            nombre: user.name,
+            nombre: user.nombre,
             email: user.email,
             telefono: user.telefono ?? "",
             foto: user.foto ?? "",
@@ -352,7 +354,7 @@ export const forgotPassword = async (req: Request, res: Response) => {
 
         sendPasswordResetToken({
             email: user.email,
-            name: user.name,
+            name: user.nombre,
             token: token.token,
         });
         res.status(200).json({
