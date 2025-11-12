@@ -9,9 +9,40 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getShortestPath = void 0;
-const Node_1 = require("../models/Node");
-const dijkstra_1 = require("../utils/dijkstra");
+exports.getShortestPath = exports.getRoutesRecent = void 0;
+const Routes_1 = require("../models/Routes");
+const controllerUtils_1 = require("../utils/controllerUtils");
+const shortestPathHelper_1 = require("../utils/shortestPathHelper");
+const getRoutesRecent = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const userId = (0, controllerUtils_1.requireUser)(req, res);
+        if (!userId)
+            return;
+        const routeDoc = yield Routes_1.Route.findOne({ user: userId }).lean();
+        if (!routeDoc || !routeDoc.routes.length) {
+            res.status(200).json([]);
+            return;
+        }
+        const sortedRoutes = [...routeDoc.routes]
+            .sort((a, b) => new Date(b.ultimoUso).getTime() -
+            new Date(a.ultimoUso).getTime())
+            .slice(0, 10);
+        const recentRoutes = yield Promise.all(sortedRoutes.map((r) => __awaiter(void 0, void 0, void 0, function* () {
+            const fechaObj = new Date(r.ultimoUso);
+            const metadata = {
+                fecha: fechaObj.toISOString().split("T")[0],
+                hora: fechaObj.toTimeString().slice(0, 5),
+            };
+            const { nodos } = yield (0, shortestPathHelper_1.calculateShortestPath)(r.origen, r.destino);
+            return { metadata, nodos };
+        })));
+        res.status(200).json(recentRoutes);
+    }
+    catch (error) {
+        (0, controllerUtils_1.handleError)(res, error, "Error al obtener rutas recientes");
+    }
+});
+exports.getRoutesRecent = getRoutesRecent;
 const getShortestPath = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { origen, destino } = req.body;
@@ -19,80 +50,44 @@ const getShortestPath = (req, res) => __awaiter(void 0, void 0, void 0, function
             res.status(400).json({ message: "Códigos inválidos" });
             return;
         }
-        console.log("🔍 Calculando ruta más corta de", origen, "a", destino);
-        // Buscar los nodos por código
-        const origenNode = yield Node_1.Node.findOne({ code: origen });
-        const destinoNode = yield Node_1.Node.findOne({ code: destino });
-        if (!origenNode || !destinoNode) {
-            res.status(404).json({
-                message: "Alguno de los códigos no existe",
-            });
+        const userId = (0, controllerUtils_1.requireUser)(req, res);
+        if (!userId)
             return;
+        const { nodos, path, totalWeight } = yield (0, shortestPathHelper_1.calculateShortestPath)(origen, destino);
+        const routeDoc = yield Routes_1.Route.findOneAndUpdate({
+            user: userId,
+            "routes.origen": origen,
+            "routes.destino": destino,
+        }, {
+            $inc: { "routes.$.count": 1 },
+            $set: { "routes.$.ultimoUso": new Date() },
+        }, { new: true });
+        if (!routeDoc) {
+            yield Routes_1.Route.updateOne({ user: userId }, {
+                $push: {
+                    routes: {
+                        origen,
+                        destino,
+                        count: 1,
+                        ultimoUso: new Date(),
+                    },
+                },
+            }, { upsert: true });
         }
-        // Obtener todos los nodos con sus conexiones
-        const nodes = yield Node_1.Node.find()
-            .populate("connections.destination", "_id name code")
-            .lean();
-        if (!nodes.length) {
-            res.status(404).json({
-                message: "No existen nodos en la base de datos",
-            });
-            return;
-        }
-        const graph = {};
-        for (const node of nodes) {
-            const adjacents = {};
-            for (const conn of node.connections) {
-                const destino = conn.destination;
-                if (destino && destino.code) {
-                    adjacents[destino.code] = conn.weight;
-                }
-            }
-            graph[node.code] = adjacents;
-        }
-        const result = (0, dijkstra_1.dijkstra)(graph, origen, destino);
-        if (!result.path || result.path.length === 0) {
-            res.status(404).json({
-                message: "No hay ruta entre los nodos seleccionados",
-            });
-            return;
-        }
-        // Obtener nodos de la ruta (por code)
-        let pathNodes = yield Node_1.Node.find({ code: { $in: result.path } })
-            .select("name code image description")
-            .lean();
-        // Ordenar según el orden real del path
-        pathNodes = pathNodes.sort((a, b) => result.path.indexOf(a.code) - result.path.indexOf(b.code));
         const fecha = new Date();
         const metadata = {
-            fecha: fecha.toISOString().split("T")[0], // YYYY-MM-DD
-            hora: fecha.toTimeString().slice(0, 5), // HH:mm
+            fecha: fecha.toISOString().split("T")[0],
+            hora: fecha.toTimeString().slice(0, 5),
         };
-        // Adaptar los datos al formato del frontend
-        const formattedNodes = pathNodes.map((node, index) => ({
-            id: node._id,
-            nombre: node.code || "Sin nombre",
-            descripcion: node.name || `Descripción del nodo ${node.code}`,
-            imagen: node.image || "https://picsum.photos/200/200",
-            mensaje: index === 0
-                ? "Aquí comienza tu ruta"
-                : index === pathNodes.length - 1
-                    ? "Has llegado a tu destino"
-                    : "Dirígete al siguiente punto",
-        }));
         res.status(200).json({
             metadata,
-            totalWeight: result.distance,
-            path: result.path,
-            nodos: formattedNodes, // 👈 coincide con lo que espera el frontend
+            totalWeight,
+            path,
+            nodos,
         });
     }
     catch (error) {
-        console.error("❌ Error al calcular ruta más corta:", error);
-        res.status(500).json({
-            message: "Error al calcular la ruta más corta",
-            error,
-        });
+        (0, controllerUtils_1.handleError)(res, error, "Error al calcular la ruta más corta");
     }
 });
 exports.getShortestPath = getShortestPath;
